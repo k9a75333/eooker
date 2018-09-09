@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!-- 加载配置文件 -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<!-- 忽略无法解析的键值对 默认为false -->
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="locations">
+			<list>
+				<value>classpath:db.properties</value>
+				<value>classpath:common.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- springmvc容器只对controller进行扫描 -->
+	<context:component-scan base-package="com.modules.*.controller" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	<!-- mvc的注解驱动器 -->
+	<!-- 在此元素上指定服务转换类 -->
+	<mvc:annotation-driven conversion-service="conversionService" />
+	<!-- 转换器 -->
+	<!-- 使用注解@EnableWebMvc或<mvc:annotation-driven/>,系统会自动初始化 FormattingConversionServiceFactoryBean实例， 
+		通过它可以生成 一个ConversionService接口对象，实际为DefaultFormattingConversionService对象 -->
+	<!-- ConversionService是顶层接口，实现了转换器的注册机(ConverterRegistry)和格式化器注册机(FormatterRegistry)两个接口,也就是说可以在它那注册转换器和格式化器 -->
+	<!-- 在运行控制器之前，处理器会使用这些转换器把HTTP的数据转换为对应的类型，用以填充控制器的参数，这就是为什么可以在控制器保持一定的规则下就能够得到参数的原因 -->
+	<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<!-- 转换器 -->
+		<property name="converters">
+			<list>
+				<bean class="com.common.converter.CustomDateConverter" />
+				<bean class="com.common.converter.StringTrimConverter" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- 配置视图解析器 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+</beans>
