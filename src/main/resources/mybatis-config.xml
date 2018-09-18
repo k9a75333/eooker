@@ -12,13 +12,13 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<!-- 层级开关，当设置为true时，它是一个开启了层级开关的延迟加载.从3.4.2的版本后默认值变为false，之前一直为true -->
 		<!-- fechType出现在级联元素(assoiation,collection)中，它存在两个值eager和lazy。这个属性忽略这两个全局配置项 -->
 		<!-- 当启用时，有延迟加载属性的对象在被调用时将会完全加载任意属性。否则，每种属性将会按需要加载。 -->
-		<setting name="aggressiveLazyLoading" value="false" />
+		<setting name="aggressiveLazyLoading" value="true" />
 		
 		<!-- TRUE ————Available parameters are [arg2, arg1, arg0, param3, param1, 
 			param2] -->
 		<!-- FALSE————Available parameters are [0, 1, 2, param3, param1, param2] -->
 		<!-- 3.4.2版本以后默认为true，3.4.1版本之前默认为false -->
-		<setting name="useActualParamName" value="false" />
+		<setting name="useActualParamName" value="true" />
 		
 		<!-- 是否允许单条sql 返回多个数据集  (取决于驱动的兼容性) default:true -->
 		<setting name="multipleResultSetsEnabled" value="true"/>
