@@ -40,7 +40,7 @@ public class UserService {
 		if (StringUtils.isEmpty(user.getId())) {
 			throw new Exception("id为空或为null");
 		}
-		user.setUpdateTime(sdf.format(new Date()));
+//		user.setUpdateTime(sdf.format(new Date()));
 		return userDao.updateUser(user);
 	}
 

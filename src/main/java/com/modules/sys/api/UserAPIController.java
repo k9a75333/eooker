@@ -55,7 +55,7 @@ public class UserAPIController {
 	 */
 	@DeleteMapping("/users/{id}")
 	@ResponseBody
-	public Result deleteUser(@PathVariable("id") String id) {
+	public Result deleteUser(@PathVariable(value = "id") String id) {
 		int affectRows = userService.deleteUserById(id);
 		if (affectRows == 1) {
 			return Result.makeSuccessResult("删除成功");
