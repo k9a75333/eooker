@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.common.server.WebSocketServer;
 import com.common.utils.Result;
 import com.modules.sys.entity.User;
 import com.modules.sys.service.UserService;
@@ -25,12 +27,43 @@ import com.modules.sys.service.UserService;
  * @author LIUYU
  * @version 2018-06-01
  */
-@Controller
+@RestController
 @RequestMapping("${adminPath}/sys/userAPI")
 public class UserAPIController {
 	
 	@Autowired
 	UserService userService;
+	
+	@RequestMapping("testWebSocket")
+	public String testWebSocket(@RequestParam(value = "num", required = true) int num) {
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				for (int i = 0; i < num ; i++) {
+					WebSocketServer.sendMessageTodigits("201610097027", i + "啦啦啦啦啦啦");
+					System.err.println("发送成功:" + "201610097027" + i + "啦啦啦啦啦啦");
+				}
+			}
+		});
+		thread.start();
+		return "success";
+	}
+	
+//	@RequestMapping("test")
+//	public void testJedis() {
+//		JedisUtils.set("666", "liuyu", 0);
+//		if (JedisUtils.exists("666")) {
+//			System.err.println("值为666");
+//			String value = (String) JedisUtils.get("key");
+//			System.err.println("value：" + value);
+//			JedisUtils.del("666");
+//			if (!JedisUtils.exists("666")) {
+//				 System.out.println("成功删除");
+//			}
+//		} else {
+//			System.err.println("没有该值");
+//		}
+//	}
 	
 	/**
 	 * 增加用户
@@ -38,7 +71,6 @@ public class UserAPIController {
 	 * @return
 	 */
 	@PostMapping("/users")
-	@ResponseBody
 	public Result addUser(@RequestBody User user) {
 		try {
 			userService.insertUser(user);
@@ -54,7 +86,6 @@ public class UserAPIController {
 	 * @return
 	 */
 	@DeleteMapping("/users/{id}")
-	@ResponseBody
 	public Result deleteUser(@PathVariable(value = "id") String id) {
 		int affectRows = userService.deleteUserById(id);
 		if (affectRows == 1) {
@@ -70,7 +101,6 @@ public class UserAPIController {
 	 * @return
 	 */
 	@PutMapping("/users")
-	@ResponseBody
 	public Result alterUser(@RequestBody User user) {
 		int affectRows;
 		try {
@@ -93,7 +123,6 @@ public class UserAPIController {
 	 * @return
 	 */
 	@GetMapping({"/users/{id}", "/users"})
-	@ResponseBody
 	public Result getUser(@PathVariable(value = "id", required = false) String id) {
 		Object obj;
 		if (id == null) {
@@ -109,4 +138,18 @@ public class UserAPIController {
 			return Result.makeFailResult("未查找到用户");
 		}
 	}
-}
+	
+	@GetMapping("/login/{digits}/{password}")
+	public Result login(
+			@PathVariable String digits, 
+			@PathVariable String password) {
+		User user = userService.login(digits, password); 
+		if (user == null) {
+			return Result.makeFailResult("failed");
+		} else {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("user", user);
+			return Result.makeSuccessResult(map);
+		}
+	}
+ }

@@ -18,5 +18,7 @@ public interface UserDao {
 	public User queryUserById(String id);
 
 	public List<User> queryAllUser();
+	
+	public User login(String digits, String password);
 
 }

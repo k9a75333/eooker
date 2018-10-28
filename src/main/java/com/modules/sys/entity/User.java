@@ -25,6 +25,11 @@ public class User {
     private String sex;
 
     /**
+     * 生日
+     */
+    private String birth;
+    
+    /**
      * 学号或工号
      */
     private String digits;
@@ -42,12 +47,27 @@ public class User {
     /**
      * 班级
      */
-    private String team;
+    private String belongClass;
 
     /**
      * 学院或部门
      */
     private String department;
+    
+    /**
+     * 专业
+     */
+    private String major;
+    
+    /**
+     * 专业方向
+     */
+    private String major_filed;
+    
+    /**
+     * 年级
+     */
+    private String grade;
 
     /**
      * 创建者
@@ -135,12 +155,12 @@ public class User {
         this.sequence = sequence == null ? null : sequence.trim();
     }
 
-    public String getTeam() {
-        return team;
+    public String getBelongClass() {
+        return belongClass;
     }
 
-    public void setTeam(String team) {
-        this.team = team == null ? null : team.trim();
+    public void setTeam(String belongClass) {
+        this.belongClass = belongClass == null ? null : belongClass.trim();
     }
 
     public String getDepartment() {
@@ -198,4 +218,40 @@ public class User {
     public void setDelFlag(String delFlag) {
         this.delFlag = delFlag == null ? null : delFlag.trim();
     }
+
+	public String getBirth() {
+		return birth;
+	}
+
+	public void setBirth(String birth) {
+		this.birth = birth;
+	}
+
+	public String getMajor() {
+		return major;
+	}
+
+	public void setMajor(String major) {
+		this.major = major;
+	}
+
+	public String getMajor_filed() {
+		return major_filed;
+	}
+
+	public void setMajor_filed(String major_filed) {
+		this.major_filed = major_filed;
+	}
+
+	public String getGrade() {
+		return grade;
+	}
+
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+
+	public void setBelongClass(String belongClass) {
+		this.belongClass = belongClass;
+	}
 }

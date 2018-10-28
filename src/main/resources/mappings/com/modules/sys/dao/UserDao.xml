@@ -78,12 +78,19 @@
 	</select>
 
 	<select id="queryAllUser" resultType="user">
-		select 
-		<include refid="userColumnsWithAlias">
+		select *
+		<!-- <include refid="userColumnsWithAlias">
 		    <property name="alias" value="u"/>
-		</include>
+		</include> -->
 		from `sys_user` u
 		where del_flag != '1'
+	</select>
+	
+	<select id="login" resultType="user">
+	    select *
+	    from `sys_user`
+	    where `digits` = #{digits}
+	    and `password` = #{password};
 	</select>
 
 </mapper>

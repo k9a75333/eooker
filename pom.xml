@@ -29,6 +29,8 @@
 
 		<junit>4.12</junit>
 		<log4j>1.2.17</log4j>
+		
+		<guava.version>22.0</guava.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -333,6 +335,20 @@
 			<artifactId>spring-data-redis</artifactId>
 			<version>1.7.2.RELEASE</version>
 		</dependency>
+		
+		<!-- google java lib -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
+		
+		<!-- Java Mail用来发送邮件 -->
+		<dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>
 
 		<!-- 第三方服务 begin -->
 		<!-- 阿里MQ -->

@@ -53,5 +53,9 @@ public class UserService {
 	public List<User> queryAllUser() {
 		return userDao.queryAllUser();
 	}
+	
+	public User login (String digits, String password) {
+		return userDao.login(digits, password);
+	}
 
 }
