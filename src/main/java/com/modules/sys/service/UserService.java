@@ -1,8 +1,9 @@
 package com.modules.sys.service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.druid.util.StringUtils;
 import com.common.utils.IdGen;
 import com.modules.sys.dao.UserDao;
+import com.modules.sys.entity.Classroom;
+import com.modules.sys.entity.LackSeat;
 import com.modules.sys.entity.User;
 
 @Service
@@ -54,8 +57,38 @@ public class UserService {
 		return userDao.queryAllUser();
 	}
 	
+	//登录
 	public User login (String digits, String password) {
 		return userDao.login(digits, password);
+	}
+	
+	//获取所有课程信息
+	public List<String> getCourseAllInfo() {
+		return userDao.getCourseAllInfo();
+	}
+	
+	//获取所有课室位置（名字）
+	public List<String> getAllClassroomName() {
+		return userDao.getAllClassroomName();
+	}
+	
+	/**
+	 * 获取房间的所有信息
+	 * @param location
+	 * @return
+	 */
+	public Map<String, Object> getSpecificRoomInfo(String location) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Classroom room = userDao.getClassroomInfo(location);
+		room.setId(null);
+		if (room.getIsFlaw().equals("0")) {
+			map.put("room_basic_info", room);
+		} else {
+			List<LackSeat> list = userDao.getFlaw(location);
+			map.put("room_basic_info", room);
+			map.put("flaw_info", list);
+		}
+		return map;
 	}
 
 }

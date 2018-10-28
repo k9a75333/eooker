@@ -66,7 +66,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 	<context:component-scan base-package="com.modules.*.service">
 		<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation" />
 	</context:component-scan>
-
+	
 	<!--使用声明式的控制配置，可以有效的规范代码 -->
 	<!--事务管理器的配置 -->
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

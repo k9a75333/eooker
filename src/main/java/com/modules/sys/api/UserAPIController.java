@@ -1,9 +1,13 @@
 package com.modules.sys.api;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,10 +16,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.common.server.WebSocketServer;
+import com.common.utils.IdGen;
 import com.common.utils.Result;
 import com.modules.sys.entity.User;
 import com.modules.sys.service.UserService;
@@ -34,6 +39,9 @@ public class UserAPIController {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	StringRedisTemplate template;
+ 	
 	@RequestMapping("testWebSocket")
 	public String testWebSocket(@RequestParam(value = "num", required = true) int num) {
 		Thread thread = new Thread(new Runnable() {
@@ -48,22 +56,6 @@ public class UserAPIController {
 		thread.start();
 		return "success";
 	}
-	
-//	@RequestMapping("test")
-//	public void testJedis() {
-//		JedisUtils.set("666", "liuyu", 0);
-//		if (JedisUtils.exists("666")) {
-//			System.err.println("值为666");
-//			String value = (String) JedisUtils.get("key");
-//			System.err.println("value：" + value);
-//			JedisUtils.del("666");
-//			if (!JedisUtils.exists("666")) {
-//				 System.out.println("成功删除");
-//			}
-//		} else {
-//			System.err.println("没有该值");
-//		}
-//	}
 	
 	/**
 	 * 增加用户
@@ -139,6 +131,12 @@ public class UserAPIController {
 		}
 	}
 	
+	/**
+	 * 登录接口
+	 * @param digits 学号
+	 * @param password 密码
+	 * @return
+	 */
 	@GetMapping("/login/{digits}/{password}")
 	public Result login(
 			@PathVariable String digits, 
@@ -148,8 +146,69 @@ public class UserAPIController {
 			return Result.makeFailResult("failed");
 		} else {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("user", user);
+			map.put("is_tutor", user.getIsTutor());
+			template.opsForValue().set(digits, IdGen.uuid());
 			return Result.makeSuccessResult(map);
 		}
 	}
+	
+	/**
+	 * 获取所有课程信息
+	 * @return
+	 */
+	@GetMapping("/course")
+	public Result getCourseAllInfo() {
+		List<String> coursesName = userService.getCourseAllInfo();
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("courses", coursesName);
+		return Result.makeSuccessResult(map);
+	}
+	
+	/**
+	 * 生成房间号
+	 * @return
+	 */
+	@GetMapping("/room_number")
+	public Result GenerateRoomNumber() {
+		DecimalFormat df = new DecimalFormat("000000");
+		Random random = new Random();
+		String roomNumber = df.format(random.nextInt(999999));
+		System.err.println(roomNumber);
+		Map<String, String> innerMap = new HashMap<String,String>();
+		innerMap.put("time", "3");
+		template.opsForHash().putAll(roomNumber, innerMap);
+//		String s = (String) template.opsForHash().get(roomNumber, "time");
+//		System.err.println(s);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("roomNumber", roomNumber);
+		return Result.makeSuccessResult(map);
+	}
+	
+	/**
+	 * 验证房间号是否存在
+	 * 0——不存在   1——存在
+	 * @return
+	 */
+	@GetMapping("verification/{roomNumber}")
+	public Result verification(@PathVariable String roomNumber) {
+		String s = (String) template.opsForHash().get(roomNumber, "time");
+		if (s == null) {
+			return Result.makeFailResult("0");
+		}
+		return Result.makeSuccessResult("1");
+	}
+	
+	@GetMapping({"classroom", "classroom/{location}"})
+	public Result getAllClassroomName(@PathVariable(value = "location", required = false) String location) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (location == null) {
+			List<String> classroomName = userService.getAllClassroomName();
+			map.put("classroomLocation", classroomName);
+		} else {
+			Map<String, Object> infoMap = userService.getSpecificRoomInfo(location);
+			map.put("specific_room_info", infoMap);
+		}
+		return Result.makeSuccessResult(map);
+	}
+	
  }

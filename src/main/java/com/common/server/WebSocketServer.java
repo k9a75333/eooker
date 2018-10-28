@@ -47,6 +47,8 @@ public class WebSocketServer {
 		// 根据该digits当前是否已经在别的终端登录进行添加操作
 		if (socketMap.containsKey(this.digits)) {
 			logger.info("当前digits:{" + this.digits + "}已有其他终端登录");
+			socketMap.remove(this.digits);
+			socketMap.put(this.digits, this);
 		} else {
 			logger.info("当前digits:{" + this.digits + "}终端登录");
 			socketMap.put(this.digits, this);

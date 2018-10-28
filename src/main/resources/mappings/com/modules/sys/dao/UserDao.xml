@@ -67,7 +67,7 @@
 	           `remarks` = #{remarks}
 	        </if>
 	    </set>
-        where `id` = #{id};
+        where `id` = #{id}
 	</update>
 
 	<select id="queryUserById" resultType="user">
@@ -87,10 +87,34 @@
 	</select>
 	
 	<select id="login" resultType="user">
-	    select *
+	    select `is_tutor`
 	    from `sys_user`
 	    where `digits` = #{digits}
-	    and `password` = #{password};
+	    and `password` = #{password}
+	</select>
+	
+	<select id="getCourseAllInfo" resultType="string">
+	    select `name`
+	    from `course`
+	</select>
+	
+	<select id="getAllClassroomName" resultType="string">
+	     select `location`
+	     from `classroom`
+	</select>
+	
+	<select id="getClassroomInfo" resultType="classroom">
+	     select *
+	     from `classroom` 
+	     where `location` = #{location};
+	</select>
+	
+	<select id="getFlaw" resultType="lackSeat">
+	     select l.`row`, l.`l_index`, l.`r_index`
+	     from `classroom` c
+	     left join `room_flaw` f on f.`room_id` = c.`id`
+	     left join `lack_seat` l on l.`id` = f.`lack_seat_id`
+	     where c.`location` = #{location};
 	</select>
 
 </mapper>

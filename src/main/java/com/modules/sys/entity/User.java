@@ -68,8 +68,21 @@ public class User {
      * 年级
      */
     private String grade;
-
+    
     /**
+     * 是否是老师 0——不是  1——是
+     */
+    private String isTutor;
+
+    public String getIsTutor() {
+		return isTutor;
+	}
+
+	public void setIsTutor(String isTutor) {
+		this.isTutor = isTutor;
+	}
+
+	/**
      * 创建者
      */
     private String createBy;
